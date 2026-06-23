@@ -1,12 +1,12 @@
 # Travaso MCP — Multi-Agent Marketplace One-Pager
 
-Source guardrail: this draft uses only the current Travaso MCP skill surface plus placeholders for pricing, commission, and customer proof. Replace bracketed values only after `/tokens/setup` and `facts.md` exist.
+Source notes: this draft uses only the current Travaso MCP skill surface plus placeholders for pricing, commission, and customer proof. Replace bracketed values only after `/tokens/setup` or a user-owned `facts.md` provides the source value.
 
 ---
 
 ## One-line summary
 
-Travaso MCP is the hotel-commerce layer for multi-agent marketplaces: each agent can search hotel quotes, create a tracked checkout link, and follow offer status through the current Travaso tool surface.
+Travaso MCP is a hotel-commerce layer for multi-agent marketplaces: an agent can search hotel quotes, create a tracked checkout link, and follow offer status through the current Travaso tool surface.
 
 Built by 7hive.com.
 
@@ -14,9 +14,9 @@ Built by 7hive.com.
 
 ## Marketplace problem
 
-Agent marketplaces can route travel intent, but they need a commerce primitive after the recommendation.
+For a marketplace where agents already handle hotel intent, recommendation is not the end of the workflow.
 
-If an agent suggests a hotel and sends the user elsewhere to book, the marketplace loses attribution. Travaso keeps the flow inside an attributed offer path.
+The documented Travaso flow gives the agent a way to move from quote to traveler-approved checkout link to offer status, with the returned offer ID available for the marketplace to store.
 
 ---
 
@@ -37,11 +37,11 @@ No additional Travaso features are assumed in this draft.
 
 ### 1. One commerce layer
 
-Your marketplace keeps the agent experience. Travaso supplies the hotel quote and checkout path.
+Your marketplace keeps the agent experience. Travaso supplies the documented hotel quote, checkout, status, and operator-cancel calls.
 
 ### 2. Per-agent attribution
 
-The checkout link is created from a Travaso recommendation and returns an offer ID. The marketplace can store that offer ID against the agent, user, or conversation.
+The checkout link is created from a Travaso recommendation. The marketplace can store the returned offer ID against the agent, user, or conversation.
 
 ### 3. Status after checkout
 
@@ -60,7 +60,7 @@ The checkout link is created from a Travaso recommendation and returns an offer 
 | Monthly | [PRICE_MONTHLY] | [COMMISSION_RANGE] |
 | Annual | [PRICE_ANNUAL] | [COMMISSION_RANGE] |
 
-Use the live `/tokens/setup` page and `facts.md` to replace these placeholders before this one-pager is sent externally.
+Use the live `/tokens/setup` page or `facts.md` to replace these placeholders before this one-pager is sent externally.
 
 ---
 
