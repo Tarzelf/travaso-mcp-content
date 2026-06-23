@@ -38,9 +38,11 @@ booking might as well have come from anywhere.
 AI travel agents. One MCP server, three calls, kickback on every
 booking.
 
-- `search_hotels` — live commissionable inventory
-- `compare_booking_price` — Booking.com price vs partner rate
-- `create_offer_checkout_link` — attributed checkout URL
+- `search_competitive_hotel_quotes` — live commissionable inventory
+- `create_offer_checkout_link` — Stripe-backed attributed checkout URL
+- `get_offer_status` — payment, booking, earning, payout readiness
+
+Setup snippets (real, copy-pastable): https://elitetravelsales.com/tokens/setup
 
 **7/8:** The numbers from a real quote: Booking.com $1,956, Travaso
 partner $1,568. Same hotel, same room. User saves $388. Agent earns
@@ -73,15 +75,16 @@ HTTP-only commerce APIs struggled with — agents had to pass tokens
 manually, get lost in redirects, etc.
 
 **4/5:** I built one for hotels. Travaso MCP. Same primitive pattern:
-search → quote → checkout → status. Hotel inventory, Booking.com
-price comparison, kickback per booking.
+search → quote → checkout → status. Hotel inventory, public-rate
+comparison, Stripe-backed attributed checkout, kickback per booking.
 
 **5/5:** If you're building an agent that sells anything bookable, the
 shape is the same. Drop me a line if you want to talk about a
 non-hotel version — restaurants, flights, experiences. The pattern
 travels.
 
-https://elitetravelsales.com/tokens
+Setup: https://elitetravelsales.com/tokens/setup
+Skills: https://github.com/Tarzelf/travaso-mcp-skill
 
 ---
 
@@ -124,8 +127,10 @@ things have to be true for an AI agent to actually sell a hotel:
    the commission payout.
 
 I built Travaso MCP to ship all three as a single MCP server. Your
-agent calls `search_hotels`, gets commissionable inventory. Calls
-`compare_booking_price`, gets the Booking.com public price next to
+agent calls `search_competitive_hotel_quotes`, gets commissionable
+inventory with `recommendationId` values. Calls
+`search_competitive_hotel_quotes`, gets the public Booking.com-style
+price next to
 the partner rate. Calls `create_offer_checkout_link`, gets an
 attributed checkout URL to send the user.
 
@@ -160,17 +165,22 @@ tracked checkout link. Every confirmed booking pays the agent a
 3-20% kickback depending on the tier (free, monthly, annual).
 
 The shape is search → quote → checkout → status, all MCP tool calls.
-Three of them live (`search_hotels`, `compare_booking_price`,
-`create_offer_checkout_link`); two of them are read-side
-(`get_booking_status`, `list_my_bookings`).
+Three of them live (`search_competitive_hotel_quotes`,
+`create_offer_checkout_link`,
+`get_offer_status`); one is operator-only (`cancel_offer`).
 
 The interesting design choice was the price comparison. Showing
 Booking.com's public price next to the agent's rate is what closes a
 sale against the "I could just book it myself" objection. Without it,
 the agent is just recommending a hotel and the user leaves.
 
-Free keys earn 3%, which is enough to demo the full flow. Monthly /
-Annual keys earn 10-20% depending on the offer.
+The current tool surface is four tools:
+`search_competitive_hotel_quotes` (returns recommendationId values),
+`create_offer_checkout_link` (Stripe-backed attributed checkout),
+`get_offer_status` (payment / booking / earning / payout readiness),
+and `cancel_offer` (operator-initiated cancellation). There's also a
+REST fallback at `/api/backend/agent/hotel-quotes` etc. for platforms
+that can't speak MCP.
 
 Wired into Hermes Agent / Claude / Cursor / ChatGPT-compatible MCP
 clients takes about 10 minutes — drop the skill, set one env var.

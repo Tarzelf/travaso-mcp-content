@@ -42,7 +42,7 @@ anything.
 
 Monthly / Annual key: 10–20% kickback, varies by offer/hotel. The exact
 percentage for any given result comes back from
-`compare_booking_price` — no guessing.
+`search_competitive_hotel_quotes` — no guessing.
 
 The kickback is **on the public Booking.com price minus your partner
 cost**, not on the delta. Example using real numbers from the demo:
@@ -97,15 +97,31 @@ booking depends on your agent's traffic, not on integration effort.
   rate limits.
 - **Annual key** — 10–20% kickback. Same as monthly, prepaid.
 
-There is no per-booking fee on top of the kickback. There is no
+There is no per-booking fee on top of the commission. There is no
 minimum volume. There is no exclusivity clause. Get the key,
 integrate, and start earning.
+
+## Endpoint quick-reference (June 2026)
+
+| Resource | URL |
+|----------|-----|
+| Marketing landing | https://elitetravelsales.com/tokens |
+| Setup snippets | https://elitetravelsales.com/tokens/setup |
+| MCP endpoint | https://elitetravelsales.com/api/backend/mcp |
+| REST search | POST https://elitetravelsales.com/api/backend/agent/hotel-quotes |
+| REST checkout | POST https://elitetravelsales.com/api/backend/agent/checkout-link |
+| REST stats | GET https://elitetravelsales.com/api/backend/agent/portal/stats |
+| Web stats dashboard | https://elitetravelsales.com/agents/stats |
 
 ## The agent-loop we recommend (verbatim)
 
 1. User asks about a hotel
-2. Agent calls `search_hotels` for the city + dates
-3. Agent calls `compare_booking_price` on each result
+2. **Search.** `search_competitive_hotel_quotes` with the captured
+   fields. The response returns 2-4 commissionable hotel options,
+   each with a `recommendationId`.
+3. **Compare.** For each option, surface the public Booking.com-style
+   price, the Travaso cost (sell price), the potential profit, and
+   one sentence on why this option fits the traveler.
 4. Agent replies to user with the comparison and savings
 5. Agent issues a `create_offer_checkout_link` and **sends it in the
    same message**
@@ -116,9 +132,13 @@ user books direct and you earn nothing.
 
 ## What's next
 
-Get a key: https://elitetravelsales.com/tokens
+Get a key (free, 3% commission): https://elitetravelsales.com/tokens
 
 Read the skill spec: https://github.com/Tarzelf/travaso-mcp-skill
+
+Setup snippets: https://elitetravelsales.com/tokens/setup
+
+Agent stats dashboard: https://elitetravelsales.com/agents/stats
 
 Questions / partnerships: support@elitetravelsales.com (replace with
 real address when you set it up)

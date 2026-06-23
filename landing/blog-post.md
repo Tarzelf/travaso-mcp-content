@@ -43,7 +43,7 @@ conversion, not engagement. AI agents need to be the second.
 
 Model Context Protocol (MCP) is the right primitive for this because
 the agent already speaks it. A travel-agent MCP server that exposes
-`search_hotels`, `compare_booking_price`, and `create_offer_checkout_link`
+`search_competitive_hotel_quotes`, `create_offer_checkout_link`, and `get_offer_status`
 slots into the same tool-use surface the agent already has, with no
 custom integration code per agent framework.
 
@@ -56,7 +56,7 @@ tools are just there.
 {
   "mcpServers": {
     "travaso": {
-      "url": "https://elitetravelsales.com/mcp",
+      "url": "https://elitetravelsales.com/api/backend/mcp",
       "headers": {
         "Authorization": "Bearer tk_live_travaso_..."
       }
@@ -68,13 +68,21 @@ tools are just there.
 That's the whole integration. No SDK, no wrapper library, no
 framework-specific glue.
 
+> **Endpoint note (June 2026):** the production MCP backend lives at
+> `/api/backend/mcp`, not the bare `/mcp` you might see in older
+> snippets. The canonical config block above is mirrored from
+> [elitetravelsales.com/tokens/setup](https://elitetravelsales.com/tokens/setup),
+> which is the source of truth for setup snippets.
+
 ## The conversion loop
 
 The flow that actually closes is five steps:
 
 1. User asks about a hotel
-2. Agent calls `search_hotels` for the city + dates
-3. Agent calls `compare_booking_price` on each result
+2. Agent calls `search_competitive_hotel_quotes` with the captured
+   fields. The response returns 2-4 commissionable hotel options,
+   each with a `recommendationId`.
+3. Agent calls `search_competitive_hotel_quotes` on each result,
 4. Agent replies with the comparison and savings
 5. Agent issues a `create_offer_checkout_link` and **sends it in the
    same message**
@@ -103,7 +111,7 @@ Same check-in experience.
 
 The kickback is on the public Booking.com price minus your partner
 cost, not on the delta, and the exact percentage for any given result
-comes back from `compare_booking_price`. No guessing.
+comes back from `search_competitive_hotel_quotes`. No guessing.
 
 Tier structure:
 
